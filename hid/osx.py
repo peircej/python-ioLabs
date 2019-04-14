@@ -6,6 +6,8 @@ Dynamically loaded on OS X.
 Refer to the hid module for available functions
 '''
 
+from builtins import range
+from builtins import object
 from ctypes import *
 from ctypes.util import find_library
 
@@ -186,7 +188,7 @@ class IOHIDDeviceInterface122(Structure):
 
 ########################################################
 # class to handle COM object references
-class COMObjectRef:
+class COMObjectRef(object):
     def __init__(self,ref):
         self.ref=ref
         logging.info("created: %s",self)
@@ -195,7 +197,7 @@ class COMObjectRef:
         logging.info("releasing: %s",self)
         self.Release()
     
-    def __nonzero__(self):
+    def __bool__(self):
         return self.ref is not None
     
     def __str__(self):

@@ -5,6 +5,7 @@ pure python module for discovering HID devices attached to a computer
 and interacting with those devices.
 '''
 
+from builtins import object
 import logging
 
 import os

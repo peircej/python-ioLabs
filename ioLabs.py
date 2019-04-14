@@ -6,6 +6,12 @@ USBBox is the main class that should be used from this module
 '''
 from __future__ import print_function
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import input
+from builtins import zip
+from builtins import range
+from builtins import object
 __version__='3.2'
 
 # turn on logging so we can see what's going on
@@ -15,7 +21,7 @@ import logging
 
 import time
 import struct
-from Queue import Queue, Empty
+from queue import Queue, Empty
 import hid
 
 IO_LABS_VENDOR_ID=0x19BC
@@ -24,20 +30,20 @@ BUTTON_BOX_PRODUCT_ID=0x0001
 def is_usb_bbox(device):
     return device.vendor == IO_LABS_VENDOR_ID and device.product == BUTTON_BOX_PRODUCT_ID
 
-class dict_struct:
+class dict_struct(object):
     '''simple class that takes keyword arguments and uses them to create fields on itself'''
     def __init__(self,**kw):
         self.__dict__.update(kw)
     
     def __str__(self):
         attribs=[]
-        for key,value in self.__dict__.items():
+        for key,value in list(self.__dict__.items()):
             attribs.append('%s=%s'%(key,value))
         return ','.join(attribs)
     
     def __repr__(self):
         attribs=[]
-        for key,value in self.__dict__.items():
+        for key,value in list(self.__dict__.items()):
             attribs.append('%s=%r'%(key,value))
         return "dict_struct(%s)" % ','.join(attribs)
 
@@ -102,11 +108,11 @@ REPORT_SUMMARY = {
     0x45 : ('ERROR',  'BBBBBBB', ('data1','data2','data3','data4','data5','data6','data7') )
 }
 
-class messages:
+class messages(object):
     '''class to handle message id lookup, and packing message objects into binary'''
     def __init__(self,message_summaries):
         self.message_summaries=message_summaries
-        for message_id,message_summary in message_summaries.items():
+        for message_id,message_summary in list(message_summaries.items()):
             # add field for the ID
             message_name=message_summary[0]
             self.__dict__[message_name]=message_id
@@ -114,7 +120,7 @@ class messages:
             self.__dict__[message_name.lower()]=self._create_packing_function(message_id,message_summary)
     
     def ALL_IDS(self):
-        return self.message_summaries.keys()
+        return list(self.message_summaries.keys())
     
     def _create_packing_function(self,message_id,message_summary):
         # always big endian format
@@ -162,7 +168,7 @@ class messages:
 COMMAND=messages(COMMAND_SUMMARY)
 REPORT=messages(REPORT_SUMMARY)
 
-class Commands:
+class Commands(object):
     '''
     class to handle sending reports to device and parsing incoming reports.
     dynamically looks up/creates method for sending reports when none is
@@ -990,17 +996,17 @@ if __name__ == '__main__':
     for command_id in REPORT.ALL_IDS():
         usbbox.commands.add_callback(command_id,report_callback)
         
-    from StringIO import StringIO
+    from io import StringIO
     outfile=StringIO()
     # record all incoming reports
-    usbbox.start_recording(REPORT_SUMMARY.keys(),outfile)
+    usbbox.start_recording(list(REPORT_SUMMARY.keys()),outfile)
     
     import re
     
     while True:
         time.sleep(0.5) # sleep a little to let any reports get received
         usbbox.process_received_reports()
-        command=raw_input("command: ").strip()
+        command=input("command: ").strip()
         if command == 'exit':
             break
         elif command == '':
@@ -1010,7 +1016,7 @@ if __name__ == '__main__':
             print("commands:")
             print(" exit")
             print(" help")
-            for command_id in COMMAND_SUMMARY.keys():
+            for command_id in list(COMMAND_SUMMARY.keys()):
                 command_name=COMMAND_SUMMARY[command_id][0].lower()
                 command_args=COMMAND_SUMMARY[command_id][2]
                 command_args=['<%s>' % arg for arg in command_args]
@@ -1021,7 +1027,7 @@ if __name__ == '__main__':
                 command_name,command_args=command_parts[0],command_parts[1:]
                 # check command is known
                 known=False
-                for command_id in COMMAND_SUMMARY.keys():
+                for command_id in list(COMMAND_SUMMARY.keys()):
                     if COMMAND_SUMMARY[command_id][0].lower() == command_name:
                         known=True
                         break

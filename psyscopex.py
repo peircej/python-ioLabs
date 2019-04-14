@@ -8,6 +8,7 @@ we provide a HID "emulation" layer, so the rest of the code interacts with this 
 the same way as for a HID device
 '''
 
+from builtins import range
 import logging
 import struct
 from ctypes import *
@@ -341,7 +342,7 @@ class PsyScopeXUSBDevice(HIDDevice):
         
         ioret=self._devInterface.WritePipe(2, report_buffer, len(report_data))
         if ioret != kIOReturnSuccess:
-            logging.info("error writing to device: 0x%x" % long(ioret))
+            logging.info("error writing to device: 0x%x" % int(ioret))
     
     def _run_interrupt_callback_loop(self,report_buffer_size):
         if not self.is_open():
@@ -365,4 +366,4 @@ class PsyScopeXUSBDevice(HIDDevice):
                 logging.info('interrupt_report_callback(%r)',report_data)
                 self._callback(self,report_data)
             else:
-                logging.info("error reading from device: 0x%x" % long(ioret))
+                logging.info("error reading from device: 0x%x" % int(ioret))

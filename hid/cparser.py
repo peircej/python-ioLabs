@@ -1,5 +1,8 @@
 # emacs: -*- mode: python; py-indent-offset: 4; indent-tabs-mode: nil -*-
 # vi: set ft=python sts=4 ts=4 sw=4 et:
+from builtins import next
+from past.builtins import basestring
+from builtins import object
 from ctypes import *
 import re
 
@@ -71,7 +74,7 @@ class tokenizer(object):
         
         self.i=-1
     
-    def next(self):
+    def __next__(self):
         if self.empty():
             raise ValueError('no more tokens found parsing - %s' % self.s)
         self.i+=1

@@ -1,5 +1,7 @@
 from __future__ import print_function
 
+from builtins import input
+from builtins import range
 from ioLabs import USBBox, REPORT
 import time
 
@@ -12,7 +14,7 @@ def flash(usbbox,led_mask=0xFF,rate=1,count=1):
     
     # ensure light off first
     usbbox.leds.state=0x00
-    for i in xrange(count):
+    for i in range(count):
         usbbox.leds.state=led_mask
         time.sleep(rate/2.0)
         usbbox.leds.state=0x00
@@ -33,7 +35,7 @@ def simon_says(usbbox,num):
     
     # create a random sequence (0-7)
     import random
-    order=[random.choice(xrange(8)) for i in range(num)]
+    order=[random.choice(range(8)) for i in range(num)]
     print("simon says:", " ".join([BUTTON_COLORS[i] for i in order]))
     
     # flash LEDs once
@@ -116,7 +118,7 @@ usbbox.leds.state=0x00
 usbbox.disable_loopback()
     
 while True:
-    command=raw_input("play game y/n [y]: ").strip()
+    command=input("play game y/n [y]: ").strip()
     if command == '':
         command = 'y'
     if command.lower() != 'y':

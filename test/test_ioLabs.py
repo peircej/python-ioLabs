@@ -1,5 +1,6 @@
 # emacs: -*- mode: python; py-indent-offset: 4; indent-tabs-mode: nil -*-
 # vi: set ft=python sts=4 ts=4 sw=4 et:
+from builtins import range
 from ioLabs import *
 
 import random
@@ -75,7 +76,7 @@ class TestUSBBox(unittest.TestCase):
         assert hasattr(port,field)
         
         # only test sub-set of values to speed up testing a bit
-        for i in random.sample(range(0,256),16):
+        for i in random.sample(list(range(0,256)),16):
             setattr(port,field,i)
             assert getattr(port,field) == i
     
@@ -146,7 +147,7 @@ class TestUSBBox(unittest.TestCase):
     
     
     def _check_port_and_state(self,port):
-        for i in random.sample(range(0,256),16):
+        for i in random.sample(list(range(0,256)),16):
             port.state=i
             mask = random.randint(0,255)
             state = port.and_state(mask)
@@ -161,7 +162,7 @@ class TestUSBBox(unittest.TestCase):
     
     
     def _check_port_or_state(self,port):
-        for i in random.sample(range(0,256),16):
+        for i in random.sample(list(range(0,256)),16):
             port.state=i
             mask = random.randint(0,255)
             state = port.or_state(mask)
@@ -176,7 +177,7 @@ class TestUSBBox(unittest.TestCase):
     
     
     def _check_port_xor_state(self,port):
-        for i in random.sample(range(0,256),16):
+        for i in random.sample(list(range(0,256)),16):
             port.state=i
             mask = random.randint(0,255)
             state = port.xor_state(mask)

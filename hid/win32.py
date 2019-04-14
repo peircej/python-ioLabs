@@ -9,6 +9,7 @@ Refer to the hid module for available functions
 
 #http://permalink.gmane.org/gmane.comp.python.ctypes/2410
 
+from builtins import range
 import logging
 import struct
 
