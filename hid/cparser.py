@@ -42,7 +42,7 @@ define('wchar_t*', c_wchar_p)
 
 def _parse_type(type_str):
     # see if the type is there
-    if _types.has_key(type_str):
+    if type_str in _types:
         return _types[type_str]
     if type_str.endswith('*'):
         type_str=type_str[:-1]
@@ -140,9 +140,9 @@ class c_function(object):
 
 def parse_type(t):
     # grab variable name (including * for pointers)
-    base_type=t.next()
+    base_type=next(t)
     while not t.empty():
-        if t.next() == '*':
+        if next(t) == '*':
             base_type += '*'
         else:
             t.push_back()
@@ -150,18 +150,18 @@ def parse_type(t):
     return c_type(base_type)
 
 def parse_fn_name(t):
-    if t.next() == '(':
+    if next(t) == '(':
         # fn pointer name
-        assert t.next() == '*'
-        name=t.next()
-        assert t.next() == ')'
+        assert next(t) == '*'
+        name=next(t)
+        assert next(t) == ')'
     else:
         name=t.current()
     return name
 
 def parse_param(t):
     param_type=parse_type(t)
-    name=t.next()
+    name=next(t)
     if WORD.match(name):
         param_type.name=name
     else:
@@ -171,12 +171,12 @@ def parse_param(t):
         
 
 def parse_param_list(t):
-    assert t.next() == '('
+    assert next(t) == '('
     params=[]
-    while t.next() != ')':
+    while next(t) != ')':
         t.push_back()
         params.append(parse_param(t))
-        if t.next() != ',':
+        if next(t) != ',':
             break
     assert t.current() == ')'
     return params
@@ -191,7 +191,7 @@ def parse(s):
     t=tokenizer(s)
     def_type = parse_type(t)
     if not t.empty():
-        if t.next() == '(':
+        if next(t) == '(':
             # looks like we're parsing a function pointer definition
             # e.g. void (*my_fn)(void)
             t.push_back()
@@ -202,9 +202,9 @@ def parse(s):
             return c_function(def_type, fn_name, param_list)
         else:
             t.push_back()
-            name = t.next()
+            name = next(t)
             if not t.empty():
-                if t.next() == '(':
+                if next(t) == '(':
                     # parsing function def again (regular def not pointer)
                     # e.g. void my_fn(void)
                     t.push_back()

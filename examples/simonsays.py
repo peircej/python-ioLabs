@@ -1,3 +1,4 @@
+from __future__ import print_function
 
 from ioLabs import USBBox, REPORT
 import time
@@ -34,7 +35,7 @@ def simon_says(usbbox,num):
     # create a random sequence (0-7)
     import random
     order=[random.choice(xrange(8)) for i in range(num)]
-    print "simon says:", " ".join([BUTTON_COLORS[i] for i in order])
+    print("simon says:", " ".join([BUTTON_COLORS[i] for i in order]))
     
     # flash LEDs once
     flash(usbbox)
@@ -104,25 +105,25 @@ def simon_says(usbbox,num):
         # should tell us how long the user took to press all of the
         # buttons
         last_press=keyevents[-1].rtc
-        print "correct (%dms)" % last_press
+        print("correct (%dms)" % last_press)
         flash(usbbox)
     else:
-        print "user said:", " ".join([BUTTON_COLORS[event.key_code] for event in keyevents])
-        print "wrong"
+        print("user said:", " ".join([BUTTON_COLORS[event.key_code] for event in keyevents]))
+        print("wrong")
         flash(usbbox,rate=0.25,count=3)
     
     return correct
 
 usbbox=USBBox()
 
-print "Simon Says"
-print "consists of several rounds of sequences being shown:"
-print "1) LEDs will flash on box"
-print "2) a sequence of LEDs will be shown"
-print "3) after the sequence finishes the LEDs will flash again"
-print "4) enter in the sequence previously shown (press the buttons that match the LEDs)"
-print "5) if you get it right the LEDs will flash once and it'll repeat the cycle (with one more item to remember)"
-print "6) if you get it wrong the LEDs will flash three times and you'll be asked if you want to play a new game"
+print("Simon Says")
+print("consists of several rounds of sequences being shown:")
+print("1) LEDs will flash on box")
+print("2) a sequence of LEDs will be shown")
+print("3) after the sequence finishes the LEDs will flash again")
+print("4) enter in the sequence previously shown (press the buttons that match the LEDs)")
+print("5) if you get it right the LEDs will flash once and it'll repeat the cycle (with one more item to remember)")
+print("6) if you get it wrong the LEDs will flash three times and you'll be asked if you want to play a new game")
 
 # use logset so that 1 turns LED on and 0 turn LED off
 usbbox.commands.logset(0xFF,0xFF)
@@ -140,7 +141,7 @@ while True:
     
     for i in range(1,50):
         time.sleep(1)
-        print "%d to remember" % i
+        print("%d to remember" % i)
         if not simon_says(usbbox,i):
             break
 

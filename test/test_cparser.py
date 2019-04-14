@@ -1,3 +1,4 @@
+from __future__ import print_function
 # emacs: -*- mode: python; py-indent-offset: 4; indent-tabs-mode: nil -*-
 # vi: set ft=python sts=4 ts=4 sw=4 et:
 from hid.cparser import *
@@ -8,24 +9,24 @@ import ctypes
 def test_tokenizer():
     t=tokenizer('void* my_fn(void)')
     assert not t.empty()
-    assert t.next() == 'void'
-    assert t.next() == '*'
-    assert t.next() == 'my_fn'
-    assert t.next() == '('
-    assert t.next() == 'void'
-    assert t.next() == ')'
+    assert next(t) == 'void'
+    assert next(t) == '*'
+    assert next(t) == 'my_fn'
+    assert next(t) == '('
+    assert next(t) == 'void'
+    assert next(t) == ')'
     assert t.empty()
 
 def test_tokenizer_keywords():
     define('long long', ctypes.c_longlong)
     t=tokenizer('void* my_fn(long long)')
     assert not t.empty()
-    assert t.next() == 'void'
-    assert t.next() == '*'
-    assert t.next() == 'my_fn'
-    assert t.next() == '('
-    assert t.next() == 'long long'
-    assert t.next() == ')'
+    assert next(t) == 'void'
+    assert next(t) == '*'
+    assert next(t) == 'my_fn'
+    assert next(t) == '('
+    assert next(t) == 'long long'
+    assert next(t) == ')'
     assert t.empty()
 
 
@@ -75,7 +76,7 @@ def test_parse_var():
 def test_parse_var_type():
     var=parse('int')
     assert var.type_name == 'int'
-    print var.name
+    print(var.name)
     assert var.name == ''
     
     var=parse('void')
@@ -84,7 +85,7 @@ def test_parse_var_type():
     
     var=parse('void*')
     assert var.type_name == 'void*'
-    print var.name
+    print(var.name)
     assert var.name == ''
 
 def test_parse_void_ctype():

@@ -4,6 +4,7 @@
 the module for interfacing with an ioLan button box.
 USBBox is the main class that should be used from this module
 '''
+from __future__ import print_function
 
 __version__='3.2'
 
@@ -137,7 +138,7 @@ class messages:
         '''
         id_byte=struct.unpack('B',message_data[0])[0]
         # see if we know how to parse this message
-        if self.message_summaries.has_key(id_byte):
+        if id_byte in self.message_summaries:
             summary=self.message_summaries[id_byte]
         
             format='>B'+summary[1]
@@ -978,14 +979,14 @@ if __name__ == '__main__':
     
     usbbox=USBBox()
     
-    print "USBBox connected"
-    print "serial #:",usbbox.serial_num
-    print "version:",usbbox.version
-    print "voice version:", usbbox.voice_version
+    print("USBBox connected")
+    print("serial #:",usbbox.serial_num)
+    print("version:",usbbox.version)
+    print("voice version:", usbbox.voice_version)
     
     # attached a callback for every report type
     def report_callback(msg):
-        print "received:",msg
+        print("received:",msg)
     for command_id in REPORT.ALL_IDS():
         usbbox.commands.add_callback(command_id,report_callback)
         
@@ -1006,14 +1007,14 @@ if __name__ == '__main__':
             continue
         elif command == 'help':
             # print list of available commands
-            print "commands:"
-            print " exit"
-            print " help"
+            print("commands:")
+            print(" exit")
+            print(" help")
             for command_id in COMMAND_SUMMARY.keys():
                 command_name=COMMAND_SUMMARY[command_id][0].lower()
                 command_args=COMMAND_SUMMARY[command_id][2]
                 command_args=['<%s>' % arg for arg in command_args]
-                print " %s %s" % (command_name,' '.join(command_args))
+                print(" %s %s" % (command_name,' '.join(command_args)))
         else:
             try:
                 command_parts=command.split()
@@ -1025,18 +1026,18 @@ if __name__ == '__main__':
                         known=True
                         break
                 if not known:
-                    print "error, unknown command: " + command_name
+                    print("error, unknown command: " + command_name)
                 else:
                     command_fn=getattr(usbbox.commands,command_name)
                     # turn all arguments into int's
                     command_args=[int(arg) for arg in command_args]
                     command_fn(*command_args)
             except:
-                print "error running: " + command
+                print("error running: " + command)
     
     # make sure we process any remaining reports
     usbbox.process_received_reports()
     usbbox.stop_recording()
     
-    print "recorded reports:"
-    print outfile.getvalue()
+    print("recorded reports:")
+    print(outfile.getvalue())
